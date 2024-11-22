@@ -1,4 +1,26 @@
 #maps { 
-    height: 580px;
-    width: 100%;
+    width: 1700px;
+    height: 800px;
  }
+
+ .map-container {
+align-content: center;
+width: 50%;
+ }
+
+ .map-card{
+   max-width: fit-content;
+   margin-inline: auto;
+ }
+
+ .leaflet-control-custom {
+    background: white;
+    padding: 5px;
+    border-radius: 4px;
+    cursor: pointer;
+    box-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
+ }
+
+ .leaflet-control-custom:hover {
+    background: #e8e8e8;
+}
