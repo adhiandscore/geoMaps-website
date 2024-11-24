@@ -44,36 +44,25 @@ var selectedIcon = L.icon({
         const marker = L.marker([latlng.lat, latlng.lng], {draggable: true, icon: defaultIcon}).addTo(map);
         markers.push(marker);
         
-        // klik marker event
-        marker.on('click', function() {
-            // cek marker apakah diklik?
-            if(selectedMarker === marker) {
-                map.removeLayer(marker);
-                markers = markers.filter( m => m !== marker);
-                updatePolygon();
-            } 
+        marker.on('click', function (e) {
+            L.DomEvent.stopPropagation(e); 
+            selectedMarkerHandler(marker);
+            selectedMarker();
+            
         });
-
+        
         marker.on('drag', function() {
             updatePolygon();
         });
+
 
         updatePolygon();
 
     });
 
-function markerSelected() {
-    if (marker.length >= 3) {
-        var polygon = L.polygon(latlngs, {
-            color: 'blue',
-            fillColor: 'green',
-            fillOpacity: 0.5
-        });
-    };
-}
-
 // fungsi untuk memperbarui polygon
 function updatePolygon() {
+
     if( polygon ) {
         map.removeLayer(polygon)
     }
@@ -110,22 +99,55 @@ function updatePolygon() {
                 selectedPolygon = polygon;
             }
         });
-    }
-
-    const latlngs = markers.map(marker => marker.getLatLng());
+    };
     
 
+}
+
+function selectedMarkerHandler(marker) {
+    if (selectedMarker === marker) {
+        selectedMarker.setIcon(defaultIcon);
+        selectedMarker = null;
+    } else {
+        if (selectedMarker) {
+            selectedMarker.setIcon(defaultIcon);
+        }
+
+        selectedMarker = marker;
+        selectedMarker.setIcon(selectedIcon);
+    }
 }
 
 // fungsi untuk menghapus marker terpilih
 function clearSelectedMarker() {
    
+    if (selectedMarker) {
+        map.removeLayer(selectedMarker);
+    }
+
+    markers = markers.filter(marker => marker !== selectedMarker);
+
+    selectedMarker = null;
+
 
 }
 
 // fungsi untuk menghapus polygon terpilih
-function deleteSelectedPolygon() {
+function deleteSelectedMarker() {
    
+    if(selectedMarker) {
+        map.removeLayer(selectedMarker);
+
+        markers = markers.filter(marker => marker !== selectedMarker);
+
+        selectedMarker = null;
+
+        updatePolygon();
+
+        alert("marker telah dihapus")
+    } else {
+        alert("tidak ada marker yang dipilih untuk dihapus")
+    }
 }
 
 // fungsi untuk menyimpan polygon ke database
@@ -149,6 +171,7 @@ function savePolygonToGeoJson() {
 }
 
 // event listener untuk tombol
+document.getElementById('deleteSelectedMarker').addEventListener('click', deleteSelectedMarker);
 document.getElementById('deleteSelectedPolygon').addEventListener('click', deleteSelectedPolygon);
 document.getElementById('clearSelectedMarker').addEventListener('click', clearSelectedMarker);
 document.getElementById('savePolygon').addEventListener('click', savePolygon);
