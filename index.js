@@ -11,7 +11,7 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
 // array untuk menyimpan koordinat
 var coordinates = [];
 var polyline = [];
-var selectedMarker = null;
+var selectedMarkers = [];
 
 let markers = [];
 let polygon = null;
@@ -84,16 +84,31 @@ function updatePolygon() {
 }
 
 function selectedMarkerHandler(marker) {
-    if (selectedMarker === marker) {
-        selectedMarker.setIcon(defaultIcon);
-        selectedMarker = null;
-    } else {
-        if (selectedMarker) {
-            selectedMarker.setIcon(defaultIcon);
-        }
+    if (selectedMarkers.includes(marker)) {
 
-        selectedMarker = marker;
-        selectedMarker.setIcon(selectedIcon);
+        selectedMarkers = selectedMarkers.filter(m => m !== marker);
+        marker.setIcon(defaultIcon);
+    } else {
+        
+        selectedMarkers.push(marker);
+        marker.setIcon(selectedIcon);
+    }
+}
+
+// fungsi untuk menghapus polygon terpilih
+function deleteSelectedMarker() {
+
+    if (selectedMarkers.length > 0) {
+        selectedMarkers.forEach(marker => {
+
+            map.removeLayer(marker);
+        });
+
+        selectedMarkers = [];
+
+        alert("marker telah dihapus")
+    } else {
+        alert("tidak ada marker yang dipilih untuk dihapus")
     }
 }
 
@@ -124,24 +139,6 @@ function selectedPolygonHandler(clickedPolygon) {
 
         
     };
-}
-
-// fungsi untuk menghapus polygon terpilih
-function deleteSelectedMarker() {
-
-    if (selectedMarker) {
-        map.removeLayer(selectedMarker);
-
-        markers = markers.filter(marker => marker !== selectedMarker);
-
-        selectedMarker = null;
-
-        updatePolygon();
-
-        alert("marker telah dihapus")
-    } else {
-        alert("tidak ada marker yang dipilih untuk dihapus")
-    }
 }
 
 function deleteSelectedPolygon() {
