@@ -101,10 +101,10 @@ function selectedPolygonHandler(clickedPolygon) {
 
     if (selectedPolygon === clickedPolygon) {
         selectedPolygon.setStyle({
-            color: "red",
-            fillColor: "yellow",
+            color: "blue",
+            fillColor: "green",
             fillOpacity: 0.5
-        })
+        });
         selectedPolygon = null;
     } else {
         if (selectedPolygon) {
@@ -120,8 +120,10 @@ function selectedPolygonHandler(clickedPolygon) {
             color: "red",
             fillColor: "yellow",
             fillOpacity: 0.7
-        })
-    }
+        });
+
+        
+    };
 }
 
 // fungsi untuk menghapus polygon terpilih
@@ -146,7 +148,7 @@ function deleteSelectedPolygon() {
     if(selectedPolygon){
         map.removeLayer(selectedPolygon);
 
-        polygon = polygons.filter(polygon => polygon !== selectedPolygon);
+        polygons = polygons.filter(polygon => polygon !== selectedPolygon);
 
         selectedPolygon = null;
         
