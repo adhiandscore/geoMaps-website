@@ -8,7 +8,7 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
 }).addTo(map);
 
-// array untuk menyimpan koordina
+// array untuk menyimpan koordinat
 var coordinates = [];
 var polyline = [];
 var selectedMarker = null;
@@ -37,39 +37,36 @@ var selectedIcon = L.icon({
 });
 
 // click to add marker
-    map.on('click', function(event) {
+map.on('click', function (event) {
 
-        const latlng = event.latlng;
+    const latlng = event.latlng;
 
-        const marker = L.marker([latlng.lat, latlng.lng], {draggable: true, icon: defaultIcon}).addTo(map);
-        markers.push(marker);
-        
-        marker.on('click', function (e) {
-            L.DomEvent.stopPropagation(e); 
-            selectedMarkerHandler(marker);
-            selectedMarker();
-            
-        });
-        
-        marker.on('drag', function() {
-            updatePolygon();
-        });
+    const marker = L.marker([latlng.lat, latlng.lng], { draggable: true, icon: defaultIcon }).addTo(map);
+    markers.push(marker);
 
-
-        updatePolygon();
-
+    marker.on('click', function (e) {
+        L.DomEvent.stopPropagation(e);
+        selectedMarkerHandler(marker);
     });
+
+    marker.on('drag', function () {
+        updatePolygon();
+    });
+    
+    updatePolygon();
+
+});
 
 // fungsi untuk memperbarui polygon
 function updatePolygon() {
 
-    if( polygon ) {
+    if (polygon) {
         map.removeLayer(polygon)
     }
 
-    if(markers.length >= 3) {
+    if (markers.length >= 3) {
         const latlngs = markers.map(marker => marker.getLatLng());
-        
+
         polygon = L.polygon(latlngs, {
             color: 'blue',
             fillColor: 'green',
@@ -77,30 +74,12 @@ function updatePolygon() {
         }).addTo(map);
 
         // add polygon event listener
-        polygon.on('click', function () {
-            if (selectedPolygon === polygon) {
-                polygon.setStyle({
-                    color: 'blue',
-                    fillColor: 'orange'
-                });
-                selectedPolygon = null;
-            }else {
-                if(selectedPolygon) {
-                    selectedPolygon.setStyle({
-                        color: 'blue',
-                        fillColor: '#3388ff'
-                    });
-                }
-
-                polygon.setStyle({
-                    color: 'red',
-                    fillColor: '#ff6666'
-                });
-                selectedPolygon = polygon;
-            }
+        polygon.on('click', function (event) {
+            L.DomEvent.stopPropagation(event);
+            selectedPolygonHandler(polygon);
         });
     };
-    
+
 
 }
 
@@ -118,9 +97,36 @@ function selectedMarkerHandler(marker) {
     }
 }
 
+function selectedPolygonHandler(clickedPolygon) {
+
+    if (selectedPolygon === clickedPolygon) {
+        selectedPolygon.setStyle({
+            color: "red",
+            fillColor: "yellow",
+            fillOpacity: 0.5
+        })
+        selectedPolygon = null;
+    } else {
+        if (selectedPolygon) {
+            selectedPolygon.setStyle({
+                color: "blue",
+                fillColor: "green",
+                fillOpacity: 0.5
+            });
+        } 
+        // set polygon yang diklik sebagai selected Polygon
+        selectedPolygon = clickedPolygon;
+        selectedPolygon.setStyle({
+            color: "red",
+            fillColor: "yellow",
+            fillOpacity: 0.7
+        })
+    }
+}
+
 // fungsi untuk menghapus marker terpilih
 function clearSelectedMarker() {
-   
+
     if (selectedMarker) {
         map.removeLayer(selectedMarker);
     }
@@ -134,8 +140,8 @@ function clearSelectedMarker() {
 
 // fungsi untuk menghapus polygon terpilih
 function deleteSelectedMarker() {
-   
-    if(selectedMarker) {
+
+    if (selectedMarker) {
         map.removeLayer(selectedMarker);
 
         markers = markers.filter(marker => marker !== selectedMarker);
@@ -150,27 +156,28 @@ function deleteSelectedMarker() {
     }
 }
 
-// fungsi untuk menyimpan polygon ke database
-function savePolygon() {
-    
-}
 
-// konversi data polygon ke arcgist
-function savePolygonToArcgist() {
-    
-}
+// // fungsi untuk menyimpan polygon ke database
+// function savePolygon() {
 
-// simpan data polygon ke json 
-function savePolygonToJson() {
-    
-}
+// }
 
-// simpan data polygon ke geojson 
-function savePolygonToGeoJson() {
-    
-}
+// // konversi data polygon ke arcgist
+// function savePolygonToArcgist() {
 
-// event listener untuk tombol
+// }
+
+// // simpan data polygon ke json 
+// function savePolygonToJson() {
+
+// }
+
+// // simpan data polygon ke geojson 
+// function savePolygonToGeoJson() {
+
+// }
+
+// // event listener untuk tombol
 document.getElementById('deleteSelectedMarker').addEventListener('click', deleteSelectedMarker);
 document.getElementById('deleteSelectedPolygon').addEventListener('click', deleteSelectedPolygon);
 document.getElementById('clearSelectedMarker').addEventListener('click', clearSelectedMarker);
