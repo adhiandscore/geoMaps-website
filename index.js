@@ -50,8 +50,12 @@ var selectedIcon = L.icon({
             if(selectedMarker === marker) {
                 map.removeLayer(marker);
                 markers = markers.filter( m => m !== marker);
-                updatePolygon;
+                updatePolygon();
             } 
+        });
+
+        marker.on('drag', function() {
+            updatePolygon();
         });
 
         updatePolygon();
@@ -107,6 +111,10 @@ function updatePolygon() {
             }
         });
     }
+
+    const latlngs = markers.map(marker => marker.getLatLng());
+    
+
 }
 
 // fungsi untuk menghapus marker terpilih
