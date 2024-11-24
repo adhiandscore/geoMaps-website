@@ -3,6 +3,10 @@
     height: 800px;
  }
 
+ #controls {
+   margin: 10px;
+}
+
  .map-container {
 align-content: center;
 width: 50%;
