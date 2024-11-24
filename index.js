@@ -124,20 +124,6 @@ function selectedPolygonHandler(clickedPolygon) {
     }
 }
 
-// fungsi untuk menghapus marker terpilih
-function clearSelectedMarker() {
-
-    if (selectedMarker) {
-        map.removeLayer(selectedMarker);
-    }
-
-    markers = markers.filter(marker => marker !== selectedMarker);
-
-    selectedMarker = null;
-
-
-}
-
 // fungsi untuk menghapus polygon terpilih
 function deleteSelectedMarker() {
 
@@ -153,6 +139,20 @@ function deleteSelectedMarker() {
         alert("marker telah dihapus")
     } else {
         alert("tidak ada marker yang dipilih untuk dihapus")
+    }
+}
+
+function deleteSelectedPolygon() {
+    if(selectedPolygon){
+        map.removeLayer(selectedPolygon);
+
+        polygon = polygons.filter(polygon => polygon !== selectedPolygon);
+
+        selectedPolygon = null;
+        
+        alert("polygon yang anda pilih terhapus");
+    } else {
+        alert("tidak ada polygon yang dipilih untuk dihapus");
     }
 }
 
